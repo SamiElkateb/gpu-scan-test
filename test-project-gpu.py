@@ -199,6 +199,12 @@ class TestScanExamples(unittest.TestCase):
             print(f"Inclusive scan: large arrays: {size}")
             self.benchmark_test(size=size, inclusive=True)
 
+    def test_exclusive_block_size_not_pow_2(self):
+        print("\nExclusive scan: block size not pow 2 (5, 3)")
+        for i in range(1, NUMBER_RANDOM_TESTS + 1):
+            array_size = 5
+            block_size = 3
+            self.test_with_array_creation(array_size=array_size, thread_block_size=block_size, name=f"Test n°{i}")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
