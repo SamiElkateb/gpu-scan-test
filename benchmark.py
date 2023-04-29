@@ -6,7 +6,7 @@ import cpu
 from timeit import default_timer as timer
 from env import PROJECT_FILE, BENCH_DESTINATION
 
-project_gpu = __import__(PROJECT_FILE)
+project_gpu = __import__(PROJECT_FILE.replace('.py', ''))
 
 
 def benchmark_gpu(runs, size, verification):
