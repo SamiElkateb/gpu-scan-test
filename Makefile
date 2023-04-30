@@ -5,7 +5,7 @@ quicktest:
 	python3 test-project-gpu.py --no-large-arrays --no-mem-check 
 
 benchmark:
-	python bench.py
+	python benchmark.py
 	
 quickbench:
-	python bench.py --fast
+	python benchmark.py --fast
