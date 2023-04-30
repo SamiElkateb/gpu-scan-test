@@ -26,6 +26,7 @@ TEST_LARGE_ARRAYS = True
 TEST_MEMORY = True
 NUMBER_RANDOM_TESTS = 1
 IS_DEBUG = False
+COURSE_ONLY = False
 
 
 def array_to_string(arr):
@@ -148,12 +149,16 @@ class TestScanExamples(unittest.TestCase):
         self.base_test(input_array=COURSE_ARRAY_3, output_array=COURSE_EXPECTED_3_INDEPENDENT, thread_block_size=2, independent=True, name="Third course example")
 
     def test_exclusive_scan_single_equal_thread_block(self):
+        if COURSE_ONLY is True:
+            self.skipTest("Skipping")
         print("\nExclusive scan: Array of size 2^m with equal single thread block (32, 32)")
         for i in range(1, NUMBER_RANDOM_TESTS + 1):
             array_size = 32
             self.test_with_array_creation(array_size=array_size, thread_block_size=array_size, name=f"Test n°{i}")
 
     def test_exclusive_scan_single_larger_thread_block(self):
+        if COURSE_ONLY is True:
+            self.skipTest("Skipping")
         print("\nExclusive scan: Array of size 2^m with a too large thread block (32, 64)")
         for i in range(1, NUMBER_RANDOM_TESTS + 1):
             array_size = 32
@@ -161,6 +166,8 @@ class TestScanExamples(unittest.TestCase):
             self.test_with_array_creation(array_size=array_size, thread_block_size=block_size, name=f"Test n°{i}")
 
     def test_exclusive_scan_single_thread_block_not_pow2(self):
+        if COURSE_ONLY is True:
+            self.skipTest("Skipping")
         print("\nExclusive scan: Array of size !2^m with a single thread block (30, 32)")
         for i in range(1, NUMBER_RANDOM_TESTS + 1):
             array_size = 30
@@ -168,6 +175,8 @@ class TestScanExamples(unittest.TestCase):
             self.test_with_array_creation(array_size=array_size, thread_block_size=block_size, name=f"Test n°{i}")
 
     def test_exclusive_scan_arbitrary_pow2(self):
+        if COURSE_ONLY is True:
+            self.skipTest("Skipping")
         print("\nArbitrary scans of: Array of size 2^m with multiple thread block (64, 8)")
         for i in range(1, NUMBER_RANDOM_TESTS + 1):
             array_size = 64
@@ -175,6 +184,8 @@ class TestScanExamples(unittest.TestCase):
             self.test_with_array_creation(array_size=array_size, thread_block_size=block_size, name=f"Test n°{i}")
 
     def test_exclusive_scan_arbitrary_not_pow2(self):
+        if COURSE_ONLY is True:
+            self.skipTest("Skipping")
         print("\nArbitrary scans of: Array of size 2^m with multiple thread block (1023, 8)")
         for i in range(1, NUMBER_RANDOM_TESTS + 1):
             array_size = 1023
@@ -182,13 +193,17 @@ class TestScanExamples(unittest.TestCase):
             self.test_with_array_creation(array_size=array_size, thread_block_size=block_size, name=f"Test n°{i}")
 
     def test_exclusive_scan_arbitrary_pow2_large_array(self):
-        print("\nExclusive scan: Very large array (1025, 1024)")
+        if COURSE_ONLY is True:
+            self.skipTest("Skipping pow 2 large array")
+        print("\nExclusive scan: large array (1025, 1024)")
         for i in range(1, NUMBER_RANDOM_TESTS + 1):
             array_size = 1025
             block_size = 1024
             self.test_with_array_creation(array_size=array_size, thread_block_size=block_size, name=f"Test n°{i}")
 
     def test_inclusive_scan(self):
+        if COURSE_ONLY is True:
+            self.skipTest("Skipping test inclusive scan")
         print("\nInclusive scan (128, 32)")
         for i in range(1, NUMBER_RANDOM_TESTS + 1):
             array_size = 128
@@ -196,31 +211,26 @@ class TestScanExamples(unittest.TestCase):
             self.test_with_array_creation(array_size=array_size, thread_block_size=block_size, inclusive=True, name=f"Test n°{i}")
 
     def test_exclusive_scan_large_arrays(self):
-        if TEST_LARGE_ARRAYS is False:
+        if TEST_LARGE_ARRAYS is False or COURSE_ONLY is True:
             self.skipTest("Skipping large arrays inclusive")
         for _, size in enumerate(LARGE_ARRAY_SIZES):
             print(f"Exclusive scan: large arrays: {size}")
             self.benchmark_test(size=size)
 
     def test_inclusive_scan_large_arrays(self):
-        if TEST_LARGE_ARRAYS is False:
+        if TEST_LARGE_ARRAYS is False or COURSE_ONLY is True:
             self.skipTest("Skipping large arrays inclusive")
         for _, size in enumerate(LARGE_ARRAY_SIZES):
             print(f"Inclusive scan: large arrays: {size}")
             self.benchmark_test(size=size, inclusive=True)
-
-    # def test_exclusive_block_size_not_pow_2(self):
-    #     print("\nExclusive scan: block size not pow 2 (5, 3)")
-    #     for i in range(1, NUMBER_RANDOM_TESTS + 1):
-    #         array_size = 5
-    #         block_size = 3
-    #         self.test_with_array_creation(array_size=array_size, thread_block_size=block_size, name=f"Test n°{i}")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         prog='Scan GPU Tester',
         description='Tests for the Scan GPU project in SI4 Polytech Nich Sophia-Antipolis')
     parser.add_argument('--random-tests', type=int, default=1)
+    parser.add_argument('--course-only', action='store_true')
+    parser.add_argument('--failfast', action='store_true')
     parser.add_argument('--no-large-arrays', action='store_true')
     parser.add_argument('--no-mem-check', action='store_true')
     parser.add_argument('--debug', action='store_true')
@@ -229,11 +239,14 @@ if __name__ == '__main__':
     TEST_MEMORY = not args.no_mem_check
     NUMBER_RANDOM_TESTS = args.random_tests
     IS_DEBUG = args.debug
+    COURSE_ONLY = args.course_only
 
     print("Starting tests: ")
     print("With memory checks") if TEST_MEMORY else print("Without memory checks")
     print("With large arrays") if LARGE_ARRAY_SIZES else print("Without large arrays")
     print()
-        
-    unittest.main(argv=[sys.argv[0], "--failfast"])
+    if args.failfast:    
+        unittest.main(argv=[sys.argv[0], "--failfast"])
+    else: 
+        unittest.main(argv=[sys.argv[0]])
 
