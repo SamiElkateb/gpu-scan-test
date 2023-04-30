@@ -25,6 +25,7 @@ COURSE_EXPECTED_3_INDEPENDENT = [0, 2, 0, 15, 0, 10, 0, 2]
 TEST_LARGE_ARRAYS = True
 TEST_MEMORY = True
 NUMBER_RANDOM_TESTS = 1
+IS_DEBUG = False
 
 
 def array_to_string(arr):
@@ -51,6 +52,9 @@ class TestScanExamples(unittest.TestCase):
         standard_cmd = subprocess.run(f"python3 {PROJECT_FILE} {TEST_FILE_NAME} {thread_block_arg} {independent_arg} {inclusive_arg}", capture_output=True, shell=True)
         expected_output = array_to_string(expected_array)
         standardcmd_stdout = standard_cmd.stdout.decode()
+        if IS_DEBUG:
+            standardcmd_stderr = standard_cmd.stderr.decode()
+            print(f"Debug: {standardcmd_stderr}")
         self.assertEqual(standardcmd_stdout, expected_output, msg=f"{name} Failed")
         print(f"{name} Succeeded")
         if not TEST_MEMORY:
@@ -68,6 +72,9 @@ class TestScanExamples(unittest.TestCase):
         inclusive_arg = "--inclusive" if inclusive is True else ""
         cmd = subprocess.run(f"python3 {PROJECT_FILE} {TEST_FILE_NAME} {thread_block_arg} {independent_arg} {inclusive_arg}", capture_output=True, shell=True)
         stdout = cmd.stdout.decode()
+        if IS_DEBUG:
+            cmd_stderr = cmd.stderr.decode()
+            print(f"Debug: {cmd_stderr}")
         self.assertEqual(stdout, expected_output, f"{name} Failed")
         print(f"{name} Succeeded")
         if not TEST_MEMORY:
@@ -84,6 +91,9 @@ class TestScanExamples(unittest.TestCase):
         expected_endfile = "inclusive" if inclusive is True else "exclusive"
         expected_output = Path(f"{BENCH_DESTINATION}{size}_{expected_endfile}.txt").read_text()
         stdout = cmd.stdout.decode()
+        if IS_DEBUG:
+            cmd_stderr = cmd.stderr.decode()
+            print(f"Debug: {cmd_stderr}")
         self.assertEqual(stdout, expected_output, f"{name} Failed")
         print(f"{name} Succeeded")
         if not TEST_MEMORY:
@@ -213,10 +223,12 @@ if __name__ == '__main__':
     parser.add_argument('--random-tests', type=int, default=1)
     parser.add_argument('--no-large-arrays', action='store_true')
     parser.add_argument('--no-mem-check', action='store_true')
+    parser.add_argument('--debug', action='store_true')
     args = parser.parse_args()
     TEST_LARGE_ARRAYS = not args.no_large_arrays
     TEST_MEMORY = not args.no_mem_check
     NUMBER_RANDOM_TESTS = args.random_tests
+    IS_DEBUG = args.debug
 
     print("Starting tests: ")
     print("With memory checks") if TEST_MEMORY else print("Without memory checks")
