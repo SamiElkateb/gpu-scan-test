@@ -27,6 +27,8 @@ TEST_MEMORY = True
 NUMBER_RANDOM_TESTS = 1
 IS_DEBUG = False
 COURSE_ONLY = False
+NO_INCLUSIVE = False
+NO_INDEPENDENT = False
 
 
 def array_to_string(arr):
@@ -138,12 +140,16 @@ class TestScanExamples(unittest.TestCase):
         self.base_test(input_array=COURSE_ARRAY_3[:-1], output_array=COURSE_EXPECTED_3[:-1], name="Third course example")
 
     def test_inclusive_scan_course(self):
+        if NO_INCLUSIVE is True:
+            self.skipTest("Skipping inclusive scan")
         print("\nAll examples of the course as inclusive scan")
         self.base_test(input_array=COURSE_ARRAY_1, output_array=COURSE_EXPECTED_1_INCLUSIVE, inclusive=True, name="First course example")
         self.base_test(input_array=COURSE_ARRAY_2, output_array=COURSE_EXPECTED_2_INCLUSIVE, inclusive=True, name="Second course example")
         self.base_test(input_array=COURSE_ARRAY_3, output_array=COURSE_EXPECTED_3_INCLUSIVE, inclusive=True, name="Third course example")
 
     def test_independent_scan_course(self):
+        if NO_INDEPENDENT is True:
+            self.skipTest("Skipping independent scan")
         print("\nAll examples of the course as inclusive scan")
         self.base_test(input_array=COURSE_ARRAY_2, output_array=COURSE_EXPECTED_2_INDEPENDENT, thread_block_size=2, independent=True, name="Second course example")
         self.base_test(input_array=COURSE_ARRAY_3, output_array=COURSE_EXPECTED_3_INDEPENDENT, thread_block_size=2, independent=True, name="Third course example")
@@ -231,6 +237,8 @@ if __name__ == '__main__':
     parser.add_argument('--random-tests', type=int, default=1)
     parser.add_argument('--course-only', action='store_true')
     parser.add_argument('--failfast', action='store_true')
+    parser.add_argument('--no-inclusive', action='store_true')
+    parser.add_argument('--no-independent', action='store_true')
     parser.add_argument('--no-large-arrays', action='store_true')
     parser.add_argument('--no-mem-check', action='store_true')
     parser.add_argument('--debug', action='store_true')
@@ -240,6 +248,8 @@ if __name__ == '__main__':
     NUMBER_RANDOM_TESTS = args.random_tests
     IS_DEBUG = args.debug
     COURSE_ONLY = args.course_only
+    NO_INCLUSIVE = args.no_inclusive
+    NO_INDEPENDENT = args.no_independent
 
     print("Starting tests: ")
     print("With memory checks") if TEST_MEMORY else print("Without memory checks")

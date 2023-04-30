@@ -11,4 +11,7 @@ quickbench:
 	python benchmark.py --fast
 
 coursetest:
-	python test-project-gpu --course-only
+	python test-project-gpu.py --course-only
+
+earlytest:
+	python test-project-gpu.py --course-only --no-independent --no-inclusive
