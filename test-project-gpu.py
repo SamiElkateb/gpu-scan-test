@@ -33,10 +33,7 @@ WITH_LINEBREAK = True
 
 
 def array_to_string(arr):
-    if WITH_LINEBREAK:
-        return (np.array2string(arr, separator=",", threshold=arr.shape[0]).strip('[]').replace('\n', '').replace(' ','')) + "\n"
-    else:
-        return (np.array2string(arr, separator=",", threshold=arr.shape[0]).strip('[]').replace('\n', '').replace(' ',''))
+    return (np.array2string(arr, separator=",", threshold=arr.shape[0]).strip('[]').replace('\n', '').replace(' ',''))
 
 
 def array_to_file(arr, filename=TEST_FILE_NAME):
@@ -62,6 +59,8 @@ class TestScanExamples(unittest.TestCase):
         if IS_DEBUG:
             standardcmd_stderr = standard_cmd.stderr.decode()
             print(f"Debug: {standardcmd_stderr}")
+        if WITH_LINEBREAK:
+            expected_output += "\n"
         self.assertEqual(standardcmd_stdout, expected_output, msg=f"{name} Failed")
         print(f"{name} Succeeded")
         if not TEST_MEMORY:
@@ -82,6 +81,8 @@ class TestScanExamples(unittest.TestCase):
         if IS_DEBUG:
             cmd_stderr = cmd.stderr.decode()
             print(f"Debug: {cmd_stderr}")
+        if WITH_LINEBREAK:
+            expected_output += "\n"
         self.assertEqual(stdout, expected_output, f"{name} Failed")
         print(f"{name} Succeeded")
         if not TEST_MEMORY:
@@ -101,6 +102,8 @@ class TestScanExamples(unittest.TestCase):
         if IS_DEBUG:
             cmd_stderr = cmd.stderr.decode()
             print(f"Debug: {cmd_stderr}")
+        if WITH_LINEBREAK:
+            expected_output += "\n"
         self.assertEqual(stdout, expected_output, f"{name} Failed")
         print(f"{name} Succeeded")
         if not TEST_MEMORY:
