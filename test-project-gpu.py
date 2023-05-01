@@ -258,7 +258,7 @@ if __name__ == '__main__':
     COURSE_ONLY = args.course_only
     NO_INCLUSIVE = args.no_inclusive
     NO_INDEPENDENT = args.no_independent
-    WITH_LINEBREAK = not args.not_linebreak
+    WITH_LINEBREAK = not args.no_linebreak
 
     print("Starting tests: ")
     print("With memory checks") if TEST_MEMORY else print("Without memory checks")
