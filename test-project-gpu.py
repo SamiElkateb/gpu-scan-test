@@ -29,10 +29,14 @@ IS_DEBUG = False
 COURSE_ONLY = False
 NO_INCLUSIVE = False
 NO_INDEPENDENT = False
+WITH_LINEBREAK = True
 
 
 def array_to_string(arr):
-    return (np.array2string(arr, separator=",", threshold=arr.shape[0]).strip('[]').replace('\n', '').replace(' ',''))
+    if WITH_LINEBREAK:
+        return (np.array2string(arr, separator=",", threshold=arr.shape[0]).strip('[]').replace('\n', '').replace(' ','')) + "\n"
+    else:
+        return (np.array2string(arr, separator=",", threshold=arr.shape[0]).strip('[]').replace('\n', '').replace(' ',''))
 
 
 def array_to_file(arr, filename=TEST_FILE_NAME):
@@ -238,6 +242,7 @@ if __name__ == '__main__':
     parser.add_argument('--course-only', action='store_true')
     parser.add_argument('--failfast', action='store_true')
     parser.add_argument('--no-inclusive', action='store_true')
+    parser.add_argument('--no-linebreak', action='store_true')
     parser.add_argument('--no-independent', action='store_true')
     parser.add_argument('--no-large-arrays', action='store_true')
     parser.add_argument('--no-mem-check', action='store_true')
@@ -250,6 +255,7 @@ if __name__ == '__main__':
     COURSE_ONLY = args.course_only
     NO_INCLUSIVE = args.no_inclusive
     NO_INDEPENDENT = args.no_independent
+    WITH_LINEBREAK = not args.not_linebreak
 
     print("Starting tests: ")
     print("With memory checks") if TEST_MEMORY else print("Without memory checks")
